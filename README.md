@@ -309,7 +309,9 @@ If you run into problems there please provide the following in the bug report to
 
 I might also ask you to turn on component logging and event logging. The follow paragraphs show you how, it's safe to leave these running if you fancy pokeing around and trying to find out what it going wrong.
 
-* Component logging. You can turn this on by adding the following to your `configuration.yaml` file.
+#### Component logging
+
+You can turn this on by adding the following to your `configuration.yaml` file.
 ```yaml
 logger:
   default: info
@@ -325,7 +327,8 @@ logger:
     pyaarlo: debug
 ```
 
-    If, for example, you suspect the problem is just with your lights you can remove unneeded debug:
+If, for example, you suspect the problem is just with your lights you can remove unneeded debug:
+
 ```yaml
 logger:
   default: info
@@ -335,23 +338,27 @@ logger:
     pyaarlo: debug
 ```
 
-    Home assistant logs everything to `/config/home-assistant.log`, a typical piece of debug from Aarlo looks like this.
+Home assistant logs everything to `/config/home-assistant.log`, a typical piece of debug from Aarlo looks like this.
+
 ```
 2020-01-21 11:44:48 DEBUG (ArloBackgroundWorker) [pyaarlo] fast refresh
 2020-01-21 11:44:48 DEBUG (ArloBackgroundWorker) [pyaarlo] day testing with 2020-01-21!
 2020-01-21 11:44:50 DEBUG (ArloEventStream) [pyaarlo] async ping response subscriptions/XXXXXX-XXX-XXXXXXX_web
 ```
-    If you fancy diving in, and please do, searching for exceptions and `traceback`s is a good place to start.
 
+If you fancy diving in, and please do, searching for exceptions and `traceback`s is a good place to start.
 
-* Event logging. You can look at what events Arlo is sending you by turning on event stream dumping. Add the following to your `configuration.yaml` file and Aarlo will dump events into `/config/.aarlo/packets.dump`:
+#### Event logging
+You can look at what events Arlo is sending you by turning on event stream dumping. Add the following to your `configuration.yaml` file and Aarlo will dump events into `/config/.aarlo/packets.dump`:
+
 ```yaml
 aarlo:
     # current config here
     packet_dump: True
 ```
 
-   This file will built up from a constant trickle of packets from Arlo. The following exerpt shows a login confirmation and a subscription check response.
+This file will built up from a constant trickle of packets from Arlo. The following exerpt shows a login confirmation and a subscription check response.
+
 ```
 {'status': 'connected'}
 { 'action': 'is',
@@ -360,7 +367,9 @@ aarlo:
     'to': 'XXXXXX-XXX-XXXXXXX_web',
     'transId': 'web!38a29262-1ce0-4c4d-8f75-fafec2c34332'}
 ```
-    Another example, if Arlo detects motion you will see a packet with the following field in it:
+
+Another example, if Arlo detects motion you will see a packet with the following field in it:
+
 ```
 'properties': {'motionDetected': True},
 ```
@@ -416,10 +425,10 @@ The component provides the following services:
 |---------|------------|-------------|
 | `camera.aarlo_request_snapshot` | `entity_id` - camera to get snapshot from | This requests a snapshot be taken. Camera will move from  taking_snapshot state when finished |
 | `camera.aarlo_request_snapshot_to_file` | `entity_id` - camera to get snapshot from<br/>`filename` - where to save snapshot | This requests a snapshot be taken and written to the passed file. Camera will move from  taking_snapshot state when finished |
-| `camera.aarlo_stop_activity` | `entity_id` - camera to get snapshot from | This moves the camera into the idle state. Can be used to stop streaming |
+| `camera.aarlo_stop_activity` | `entity_id` - camera to stop activity | This moves the camera into the idle state. Can be used to stop streaming |
 | `camera.start_recording` | `entity_id` - camera to start recording<br>`duration` - amount of time in seconds to record | Begins video capture from the specified camera |
 | `camera.stop_recording` | `entity_id` - camera to stop recording | Ends video capture from the specified camera |
-| `alarm_control_panel.aarlo_set_mode` | `entity_id` - camera to get snapshot from<br/>`mode` - custom mode to change to | Set the alarm to a custom mode |
+| `alarm_control_panel.aarlo_set_mode` | `entity_id` - base station to set mode<br/>`mode` - custom mode to change to | Set the alarm to a custom mode |
 
 <a name="advanced-websockets"></a>
 ### Web Sockets
@@ -430,7 +439,7 @@ The component provides the following extra web sockets:
 |---------|------------|-------------|
 | aarlo_video_url | <ul><li>`entity_id` - camera to get details from</li><ul> | Request details of the last recorded video. Returns: <ul><li>`url` - video url</li><li>`url_type` - video type</li><li>`thumbnail` - thumbnail image url</li><li>`thumbnail_type` - thumbnail image type</li></ul> |
 | aarlo_library | <ul><li>`at-most` - return at most this number of entries</li><ul> | Request up the details of `at-most` recently recorded videos. Returns an array of:<ul><li>`created_at`: unix time stamp</li><li>`created_at_pretty`: pretty version of the create time</li><li>`url`: URL of the video</li><li>`url_type`: video type</li><li>`thumbnail`: URL of the thumbnail</li><li>`thumbnail_type`: thumbnail type</li><li>`object`: object in the video that triggered the capture</li><li>`object_region`: region in the video that triggered the capture</li></ul> |
-| aarlo_stream_url | <ul><li>`entity_id` -  camera to get snapshot from</li><li>`filename` - where to save snapshot | Ask the camera to start streaming. Returns:<ul><li>`url` - URL of the video stream</li></ul> |
+| aarlo_stream_url | <ul><li>`entity_id` -  camera to get stream url</li><li>`filename` - where to save snapshot | Ask the camera to start streaming. Returns:<ul><li>`url` - URL of the video stream</li></ul> |
 | aarlo_snapshot_image | <ul><li>`entity_id` -  camera to get snapshot from</li></ul> | Request a snapshot. Returns image details: <ul><li>`content_type`: the image type</li><li>`content`: the image</li></ul> |
 | aarlo_stop_activity | <ul><li>`entity_id` - camera to stop activity on</li></ul> | Stop all the activity in the camera. Returns: <ul><li>`stopped`: True if stop request went in</li></ul> |
 
